@@ -1,0 +1,196 @@
+.graficos-seccion {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    margin-top: 2rem;
+}
+
+.controles-graficos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tipos-graficos {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tipo-grafico-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tipo-grafico-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.tipo-grafico-btn:hover {
+    background-color: #e9ecef;
+}
+
+.controles-exportacion {
+    display: flex;
+    gap: 10px;
+}
+
+.graficos-container {
+    position: relative;
+    height: 400px;
+    margin-top: 20px;
+}
+
+.mensaje-graficos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #6c757d;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Estilos para los modales de vista previa */
+.modal-vista-previa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.preview-pdf, .preview-excel {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+.tabla-informe {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.tabla-informe th, .tabla-informe td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+}
+
+.tabla-informe th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+.resumen-informe {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+}
+
+.nota-simulacion {
+    font-style: italic;
+    color: #6c757d;
+    margin: 15px 0;
+}
+
+/* Responsividad para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .controles-graficos {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .tipos-graficos, .controles-exportacion {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .graficos-container {
+        height: 300px;
+    }
+    
+    .modal-contenido {
+        width: 95%;
+        max-height: 80vh;
+    }
+}
+
+.chart-container {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    margin-top: var(--spacing-lg);
+}
+
+.chart-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--bg-input);
+    border-radius: 8px;
+}
+
+.chart-type-selector {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.chart-type-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background: white;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chart-type-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.chart-canvas {
+    min-height: 400px;
+    margin-top: var(--spacing-md);
+}

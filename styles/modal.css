@@ -1,0 +1,206 @@
+/* Estilos para modales y vistas previas */
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-container.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--background-white);
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease;
+    padding: 2rem;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+    background: var(--white);
+    border-top: 4px solid var(--primary-color);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-container.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.modal-close {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background-color: var(--background-light);
+    color: #dc3545;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+.modal-footer button {
+    margin-left: 10px;
+}
+
+/* Estilos específicos para la vista previa de informes */
+.informe-preview {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.informe-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.informe-header h3 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+}
+
+.informe-header p {
+    margin: 0;
+    color: #6c757d;
+}
+
+/* Mensaje de simulación */
+.simulacion-msg {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Estilos específicos para el modal de confirmación de profesor añadido */
+.profesor-info {
+    text-align: center;
+    margin: 10px 0 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.profesor-info h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.profesor-info p {
+    margin: 8px 0;
+    color: #6c757d;
+}
+
+.profesor-info .salario {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-top: 10px;
+}
+
+.confirmacion-icon {
+    text-align: center;
+    margin: 15px 0;
+}
+
+/* Animación para el icono de confirmación */
+.confirmacion-icon svg {
+    animation: checkmark 0.5s ease-in-out 0.2s forwards;
+    transform: scale(0);
+}
+
+@keyframes checkmark {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.success-icon {
+    color: var(--primary-color);
+}
+
+.modal-actions .confirm-button {
+    background: var(--gradient-primary);
+    color: var(--white);
+}
+
+/* Responsividad para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+}
+
+/* Depuración para asegurar que el modal se ve */
+.error {
+    border: 2px solid red;
+}

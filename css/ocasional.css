@@ -1,0 +1,207 @@
+/* Estilos específicos para el simulador de profesores ocasionales */
+
+/* Formulario */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+#seccion-bonificaciones {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#seccion-bonificaciones h4 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.bonificacion-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #ddd;
+}
+
+.bonificacion-item:last-child {
+    border-bottom: none;
+}
+
+.bonificacion-item .checkbox-group {
+    width: 200px;
+    margin-right: 20px;
+    margin-bottom: 0;
+}
+
+.bonificacion-item .form-group {
+    flex: 1;
+    min-width: 150px;
+    margin-bottom: 5px;
+}
+
+/* Resultados */
+.profesor-info {
+    background-color: #f0f8ff;
+    border: 1px solid #b8d0e8;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.profesor-info p {
+    margin: 5px 0;
+}
+
+.salary-breakdown {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.salary-breakdown h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 8px;
+}
+
+.salary-breakdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.salary-breakdown li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dotted #dee2e6;
+}
+
+.salary-breakdown li:last-child {
+    border-bottom: none;
+}
+
+.salary-breakdown .total-salary {
+    font-weight: bold;
+    color: #2c3e50;
+    border-top: 2px solid #dee2e6;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.total-salary, .total-bonificaciones {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Botones para actualizar SMMLV */
+#actualizar-smmlv {
+    background-color: #17a2b8;
+}
+
+#actualizar-smmlv:hover {
+    background-color: #138496;
+}
+
+/* Mensaje de éxito */
+.success-mensaje {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.info-mensaje {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Estilos para el desglose de puntos */
+.points-breakdown {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.points-breakdown h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 8px;
+}
+
+.points-breakdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.points-breakdown li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dotted #dee2e6;
+}
+
+.points-breakdown li:last-child {
+    border-bottom: none;
+}
+
+.points-breakdown .total-points {
+    font-weight: bold;
+    color: #2c3e50;
+    border-top: 2px solid #dee2e6;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+/* Estilos para las secciones de información */
+.info-section {
+    margin-bottom: 20px;
+}
+
+.info-section h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.form-section {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-section h4 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+}

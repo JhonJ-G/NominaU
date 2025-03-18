@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Nómina - Profesores Ocasionales</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/ocasional.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/IMAGENES/LOGO-UPC-VERDE-2.png" alt="Logo UPC">
+        </div>
+        <h1>Simulador de Nómina UPC</h1>
+    </header>
+    
+    <nav>
+        <ul class="tabs">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="planta.html">Profesores de Planta</a></li>
+            <li><a href="ocasional.html" class="active" id="ocasional-tab">Profesores Ocasionales</a></li>
+            <li><a href="catedratico.html">Profesores Catedráticos</a></li>
+            <li><a href="nomina.html">Nómina</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <section class="intro">
+            <h2>Simulador de Salario para Profesores Ocasionales</h2>
+            <p>Este módulo calcula el salario para profesores ocasionales según el S.M.M.L.V. y la categoría docente, conforme a la normativa vigente.</p>
+        </section>
+        
+        <section class="calculator">
+            <div class="calculator-content">
+                <h3>Ingrese los datos del profesor ocasional</h3>
+                <!-- Agregar id específico al formulario -->
+                <form id="salary-form-ocasional" class="salary-form">
+                    <!-- El formulario se carga dinámicamente desde JavaScript -->
+                </form>
+            </div>
+        </section>
+        
+        <!-- Asegurar que esta sección exista y tenga el ID correcto -->
+        <section class="results" id="resultados-ocasional">
+            <h3>Resultados</h3>
+            <div class="resultados-content">
+                <p class="info-mensaje">Complete el formulario para calcular el salario.</p>
+            </div>
+        </section>
+    </main>
+    
+  
+    
+    <!-- Asegurar que los scripts se carguen en el orden correcto -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/simuladorOcasional.js"></script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Nómina de Profesores - UPC</title>
+    <link rel="stylesheet" href="styles/general.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/form.css">
+    <link rel="stylesheet" href="styles/results.css">
+    <link rel="stylesheet" href="styles/tables.css">
+    <link rel="stylesheet" href="styles/buttons.css">
+    <link rel="stylesheet" href="styles/graficos.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <div class="header-logo">
+                    <i class="fas fa-calculator"></i>
+                </div>
+            </div>
+            <div class="header-text">
+                <h1>Simulación de Nómina de Profesores - UPC</h1>
+                <div class="header-subtitle">Sistema de cálculo y gestión de compensaciones académicas</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Sistema de Notificaciones -->
+    <div id="notification-container"></div>
+    
+    <main>
+        <div class="tabs">
+            <button class="tab-button active" data-tab="planta">Profesores de Planta</button>
+            <button class="tab-button" data-tab="ocasional">Profesores Ocasionales</button>
+            <button class="tab-button" data-tab="nomina">Nómina Completa</button>
+        </div>
+        
+        <section id="planta-tab" class="tab-content active">
+            <h2>Simulación de Salarios - Profesores de Planta (Decreto 1279)</h2>
+            <form id="salary-form-planta" class="salary-form">
+                <!-- Campos de entrada para los datos del profesor -->
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div></div>
+
+                <div class="form-group">
+                    <label for="titulo-pregrado">Título de Pregrado:</label>
+                    <select id="titulo-pregrado" name="titulo-pregrado" required>
+                        <option value="regular">Pregrado Regular</option>
+                        <option value="medicina">Pregrado en Medicina o Composición Musical</option>
+                        <option value="ninguno">Ninguno</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="especializaciones">Número de Especializaciones:</label>
+                    <select id="especializaciones" name="especializaciones">
+                        <option value="0">Ninguna</option>
+                        <option value="1">1 Especialización</option>
+                        <option value="2">2 Especializaciones</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="duracion-especializacion">Duración de Especialización (años):</label>
+                    <input type="number" id="duracion-especializacion" name="duracion-especializacion" min="0" max="3" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="maestrias">Número de Maestrías:</label>
+                    <select id="maestrias" name="maestrias">
+                        <option value="0">Ninguna</option>
+                        <option value="1">1 Maestría</option>
+                        <option value="2">2 Maestrías</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="doctorados">Número de Doctorados:</label>
+                    <select id="doctorados" name="doctorados">
+                        <option value="0">Ninguno</option>
+                        <option value="1">1 Doctorado</option>
+                        <option value="2">2 Doctorados</option>
+                    </select>
+                </div>
+                
+                <div class="form-group checkbox-container">
+                    <input type="checkbox" id="doctorado-post-1998" name="doctorado-post-1998" disabled>
+                    <label for="doctorado-post-1998">
+                        <i class="fas fa-graduation-cap"></i>
+                        Doctorado obtenido después de 1998
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <select id="categoria" name="categoria" required>
+                        <option value="instructor">Instructor</option>
+                        <option value="instructorUNAL">Instructor de la Universidad Nacional</option>
+                        <option value="asistente">Profesor Asistente</option>
+                        <option value="asociado">Profesor Asociado</option>
+                        <option value="titular">Profesor Titular</option>
+                    </select>
+                </div>
+                <div></div>
+                <div class="form-section-header">
+                    <h3>Experiencia Académica y Profesional</h3>
+                </div>
+                <div></div>
+
+                <div class="form-group">
+                    <label for="experiencia-docencia">Años de Experiencia en Docencia:</label>
+                    <input type="number" id="experiencia-docencia" name="experiencia-docencia" min="0" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experiencia-investigacion">Años de Experiencia en Investigación:</label>
+                    <input type="number" id="experiencia-investigacion" name="experiencia-investigacion" min="0" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experiencia-direccion">Años de Experiencia en Dirección Académica:</label>
+                    <input type="number" id="experiencia-direccion" name="experiencia-direccion" min="0" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experiencia-profesional">Años de Experiencia Profesional:</label>
+                    <input type="number" id="experiencia-profesional" name="experiencia-profesional" min="0" value="0" required>
+                </div>
+                
+                <div class="form-section-header">
+                    <h1>Cargo Administrativo</h1>
+                </div>
+                <div></div>
+
+                
+                <div class="form-group">
+                    <label for="cargo">Cargo Académico-Administrativo:</label>
+                    <select id="cargo" name="cargo">
+                        <option value="ninguno">Ninguno</option>
+                        <option value="rector">Rector</option>
+                        <option value="vicerrector">Vicerrector/Secretario General</option>
+                        <option value="decano">Decano/Director de División</option>
+                        <option value="vicedecano">Vicedecano/Director Administrativo</option>
+                        <option value="director">Director de Departamento/Escuela/Instituto</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="anios-cargo">Años en el cargo:</label>
+                    <input type="number" id="anios-cargo" name="anios-cargo" min="0" value="0">
+                </div>
+                
+                <div class="form-section-header">
+                    <h1>Producción Académica</h1>
+                </div>
+                <div></div>
+
+                <div class="form-group">
+                    <label for="articulos-a1">Artículos publicados (Categoría A1):</label>
+                    <input type="number" id="articulos-a1" name="articulos-a1" min="0" value="0" onchange="actualizarCamposAutores('a1')" class="input-articulos">
+                    <div id="autores-a1-container" class="autores-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="articulos-a2">Artículos publicados (Categoría A2):</label>
+                    <input type="number" id="articulos-a2" name="articulos-a2" min="0" value="0" onchange="actualizarCamposAutores('a2')" class="input-articulos">
+                    <div id="autores-a2-container" class="autores-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="articulos-b">Artículos publicados (Categoría B):</label>
+                    <input type="number" id="articulos-b" name="articulos-b" min="0" value="0" onchange="actualizarCamposAutores('b')" class="input-articulos">
+                    <div id="autores-b-container" class="autores-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="articulos-c">Artículos publicados (Categoría C):</label>
+                    <input type="number" id="articulos-c" name="articulos-c" min="0" value="0" onchange="actualizarCamposAutores('c')" class="input-articulos">
+                    <div id="autores-c-container" class="autores-container"></div>
+                </div>
+                
+                <div class="form-section-header">
+                    <h3>Producción de Videos Cinematográficos o Fonográficos</h3>
+                </div>
+
+                <div></div>
+                <div class="form-group">
+                    <label for="obras-artisticas-inter">Obras Artísticas con impacto internacional:</label>
+                    <input type="number" id="obras-artisticas-inter" name="obras-artisticas-inter" min="0" value="0" onchange="actualizarCamposObras('inter')" class="input-obras">
+                    <div id="obras-inter-container" class="obras-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="obras-artisticas-nac">Obras Artísticas con impacto nacional:</label>
+                    <input type="number" id="obras-artisticas-nac" name="obras-artisticas-nac" min="0" value="0" onchange="actualizarCamposObras('nac')" class="input-obras">
+                    <div id="obras-nac-container" class="obras-container"></div>
+                </div>
+                
+                <div class="form-section-header">
+                    <h3>Libros</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label for="libros">Libros publicados:</label>
+                    <input type="number" id="libros" name="libros" min="0" value="0" onchange="actualizarCamposLibros()" class="input-libros">
+                    <div id="libros-container" class="autores-container"></div>
+                </div>
+                
+                <div class="form-section-header">
+                    <h3>Tesis Dirigidas</h3>
+                </div>
+
+                <div class="form-group">
+                    <label for="tesis-maestria">Tesis de Maestría:</label>
+                    <input type="number" id="tesis-maestria" name="tesis-maestria" min="0" value="0" required>
+                </div>
+
+                <div class="form-group checkbox-container">
+                    <input type="checkbox" id="multiple-directores-maestria" name="multiple-directores-maestria" onchange="toggleMultipleDirectores('maestria')">
+                    <label for="multiple-directores-maestria">¿Ha trabajado con múltiples directores?</label>
+                </div>
+
+                <div class="form-group" id="multiple-directores-maestria-container" style="display: none;">
+                    <label for="num-tesis-multiple-maestria">Número de tesis dirigidas con múltiples directores:</label>
+                    <input type="number" id="num-tesis-multiple-maestria" name="num-tesis-multiple-maestria" min="0" value="0" onchange="actualizarCamposDirectores('maestria')">
+                    <div id="directores-maestria-container" class="directores-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tesis-doctorado">Tesis de Doctorado:</label>
+                    <input type="number" id="tesis-doctorado" name="tesis-doctorado" min="0" value="0" required>
+                </div>
+
+                <div class="form-group checkbox-container">
+                    <input type="checkbox" id="multiple-directores-doctorado" name="multiple-directores-doctorado" onchange="toggleMultipleDirectores('doctorado')">
+                    <label for="multiple-directores-doctorado">¿Ha trabajado con múltiples directores?</label>
+                </div>
+
+                <div class="form-group" id="multiple-directores-doctorado-container" style="display: none;">
+                    <label for="num-tesis-multiple-doctorado">Número de tesis dirigidas con múltiples directores:</label>
+                    <input type="number" id="num-tesis-multiple-doctorado" name="num-tesis-multiple-doctorado" min="0" value="0" onchange="actualizarCamposDirectores('doctorado')">
+                    <div id="directores-doctorado-container" class="directores-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="valor-punto">Valor del Punto:</label>
+                    <input type="number" id="valor-punto" name="valor-punto" min="0" value="14966" required>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="primary-button">Calcular Salario</button>
+                </div>
+            </form>
+            
+            <section id="resultados-planta" class="resultados">
+                <h3>Resultados del Cálculo</h3>
+                <div class="resultados-content"></div>
+            </section>
+        </section>
+        
+        <section id="ocasional-tab" class="tab-content">
+            <h2>Simulación de Salarios - Profesores Ocasionales (Acuerdo 006)</h2>
+            <!-- Similar form structure for occasional professors -->
+            <form id="salary-form-ocasional" class="salary-form">
+                <!-- Form fields for occasional professors -->
+            </form>
+            
+            <section id="resultados-ocasional" class="resultados">
+                <h3>Resultados del Cálculo</h3>
+                <div class="resultados-content"></div>
+            </section>
+        </section>
+        
+        <section id="nomina-tab" class="tab-content">
+            <h2>Nómina Completa de la UPC</h2>
+            <div id="nomina-control">
+                <button id="calcular-nomina" class="primary-button">Calcular Nómina Completa</button>
+                <button id="generar-excel" class="secondary-button">Exportar a Excel</button>
+                <button id="generar-pdf" class="secondary-button">Exportar a PDF</button>
+            </div>
+            
+            <div id="nomina-profesores">
+                <h3>Profesores en Nómina</h3>
+                <table id="tabla-profesores">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Tipo</th>
+                            <th>Puntos</th>
+                            <th>Salario Mensual</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los profesores se agregarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="resumen-nomina" class="resumen-nomina-container">
+                <div class="resumen-header">
+                    <h2>Resumen de Nómina</h2>
+                </div>
+                
+                <div class="resumen-grid">
+                    <div class="resumen-card">
+                        <h3 class="card-title">Total Profesores</h3>
+                        <div class="card-value" id="total-profesores">0</div>
+                        <p class="card-subtitle" id="distribucion-profesores">Planta: 0, Ocasionales: 0</p>
+                    </div>
+                    
+                    <div class="resumen-card">
+                        <h3 class="card-title">Nómina Mensual</h3>
+                        <div class="card-value currency" id="nomina-mensual">0</div>
+                        <p class="card-subtitle">Actualizado al mes en curso</p>
+                    </div>
+                    
+                    <div class="resumen-card">
+                        <h3 class="card-title">Nómina Semestral</h3>
+                        <div class="card-value currency" id="nomina-semestral">0</div>
+                        <p class="card-subtitle">Proyección a 6 meses</p>
+                    </div>
+                    
+                    <div class="resumen-card">
+                        <h3 class="card-title">Nómina Anual</h3>
+                        <div class="card-value currency" id="nomina-anual">0</div>
+                        <p class="card-subtitle">Proyección año fiscal</p>
+                    </div>
+                </div>
+                
+                <div class="risk-analysis">
+                    <div class="risk-header">
+                        <div class="risk-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="risk-title">Análisis de Riesgo Financiero</h3>
+                    </div>
+                    
+                    <div class="risk-content">
+                        <div class="risk-metric">
+                            <h4 class="metric-label">Nivel de Riesgo</h4>
+                            <div class="risk-indicator low">Riesgo Bajo</div>
+                            <p class="metric-value">< 2MM</p>
+                        </div>
+                        
+                        <div class="risk-metric">
+                            <h4 class="metric-label">Carga Financiera</h4>
+                            <p class="metric-value">Manejable</p>
+                            <p class="card-subtitle">Dentro del presupuesto proyectado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nueva sección de visualización de datos y gráficos -->
+            <div id="visualizacion-nomina" class="graficos-seccion">
+                <h3>Visualización de Datos</h3>
+                
+                <div class="controles-graficos">
+                    <div class="tipos-graficos">
+                        <button class="tipo-grafico-btn active" data-tipo="barras">Gráfico de Barras</button>
+                        <button class="tipo-grafico-btn" data-tipo="lineas">Gráfico de Líneas</button>
+                        <button class="tipo-grafico-btn" data-tipo="circular">Gráfico Circular</button>
+                    </div>
+                    
+                    <div class="filtros-graficos">
+                        <label for="periodo-grafico">Período:</label>
+                        <select id="periodo-grafico">
+                            <option value="mensual">Mensual</option>
+                            <option value="trimestral">Trimestral</option>
+                            <option value="semestral">Semestral</option>
+                            <option value="anual">Anual</option>
+                        </select>
+                    </div>
+                    
+                    <div class="controles-exportacion">
+                        <button id="exportar-grafico" class="secondary-button">Exportar Gráfico</button>
+                    </div>
+                </div>
+                
+                <div id="graficos-container" class="graficos-container">
+                    <!-- Los gráficos se mostrarán aquí -->
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="scripts/constants.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/calculations.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/simuladorPlanta.js"></script>
+    <script src="scripts/simuladorOcasional.js"></script>
+    <script src="scripts/nomina.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/graficos.js"></script>
+    <script src="scripts/informes.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/debug.js"></script>
+    <script src="scripts/checkbox.js"></script>
+
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <img src="IMAGENES/logo-vertical.jpg" alt="Logo UPC" class="footer-logo">
+                <h3 class="footer-title">Sobre el Proyecto</h3>
+                <p>Sistema de Nómina desarrollado para la Universidad Popular del Cesar, enfocado en la gestión eficiente y profesional de los procesos de nómina.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Equipo de Desarrollo</h3>
+                <div class="developer-card">
+                    <img src="IMAGENES/desarrollador.png" alt="Miguel Garcia" class="developer-avatar">
+                    <div class="developer-info">
+                        <div class="developer-name">Miguel Angel Garcia Daza</div>
+                        <div class="developer-role">Desarrollador Full Stack</div>
+                    </div>
+                </div>
+                <div class="developer-card">
+                    <img src="IMAGENES/desarrollador.png" alt="Yorfran Sanjuan" class="developer-avatar">
+                    <div class="developer-info">
+                        <div class="developer-name">Yorfran Yesid Sanjuan Garcia</div>
+                        <div class="developer-role">Desarrollador Backend</div>
+                    </div>
+                </div>
+                <div class="developer-card">
+                    <img src="IMAGENES/desarrollador.png" alt="Jhon Gomez" class="developer-avatar">
+                    <div class="developer-info">
+                        <div class="developer-name">Jhon Jairo Gomez Duran</div>
+                        <div class="developer-role">Desarrollador Frontend</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Contacto</h3>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        pqrs@unicesar.edu.co
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        Línea de servicio a la ciudadanía: (+57 605 588 5592)
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Universidad Popular del Cesar
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sistema de Nómina UPC. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
