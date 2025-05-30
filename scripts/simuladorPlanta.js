@@ -55,38 +55,37 @@ function calcularTotalPuntos(datosProfesor) {
     desglose.escalafon = escalafonPuntos[datosProfesor.categoria] || 0;
 
     // Experiencia calificada
-    let puntosExperiencia = 0;
-    puntosExperiencia += datosProfesor.aniosDocencia * 4;
-    puntosExperiencia += datosProfesor.aniosInvestigacion * 6;
-    puntosExperiencia += datosProfesor.aniosDireccion * 4;
-    puntosExperiencia += datosProfesor.aniosProfesional * 3;
+    let puntosDocencia = datosProfesor.aniosDocencia * 4;
+    let puntosInvestigacion = datosProfesor.aniosInvestigacion * 6;
+    let puntosDireccion = datosProfesor.aniosDireccion * 4;
+    let puntosProfesional = datosProfesor.aniosProfesional * 3;
+    let puntosExperiencia = puntosDocencia + puntosInvestigacion + puntosDireccion + puntosProfesional;
 
-    puntos += Math.min(puntosExperiencia, {
-        'Auxiliar': 20,
-        'Asistente': 45,
-        'Asociado': 90,
-        'Titular': 120
-    }[datosProfesor.categoria] || 0);
-    desglose.experiencia = Math.min(puntosExperiencia, {
-        'Auxiliar': 20,
-        'Asistente': 45,
-        'Asociado': 90,
-        'Titular': 120
-    }[datosProfesor.categoria] || 0);
+    // Tope según categoría (asegúrate de usar minúsculas)
+    const topesExperiencia = {
+        'instructor': 20,
+        'instructorunal': 20,
+        'asistente': 45,
+        'asociado': 90,
+        'titular': 120
+    };
+    // Normaliza la categoría a minúsculas y sin espacios para el tope
+    const categoriaKey = (datosProfesor.categoria || '').toLowerCase().replace(/\s+/g, '');
+    const tope = topesExperiencia[categoriaKey] || 0;
+    const experienciaCalificada = Math.min(puntosExperiencia, tope);
 
-    // Productividad académica
-    let puntosProductividad = 0;
-    puntosProductividad += datosProfesor.articulosA1 * 15;
-    puntosProductividad += datosProfesor.articulosA2 * 12;
-    puntosProductividad += datosProfesor.articulosB * 8;
-    puntosProductividad += datosProfesor.articulosC * 3;
-    puntosProductividad += datosProfesor.numLibros * 20;
-    puntosProductividad += (datosProfesor.numTesisMaestria || 0) * 15; 
-    puntosProductividad += (datosProfesor.numTesisDoctorado || 0) * 20; // Valor más alto para tesis doctorales
-    puntosProductividad += datosProfesor.obrasInternacional * 20;
-    puntosProductividad += datosProfesor.obrasNacional * 14;
+    // Desglose de experiencia
+    desglose.experienciaCalificada = experienciaCalificada;
+    desglose.experiencia = {
+        docencia: puntosDocencia,
+        investigacion: puntosInvestigacion,
+        direccion: puntosDireccion,
+        profesional: puntosProfesional
+    };
 
-    // Calcular puntos por artículos dinámicamente
+    puntos += experienciaCalificada;
+
+    // Productividad académica: artículos, obras y libros (NO tesis)
     let puntosArticulos = 0;
     ['a1', 'a2', 'b', 'c'].forEach(categoria => {
         const numArticulos = parseInt(datosProfesor[`articulos${categoria.toUpperCase()}`]) || 0;
@@ -95,20 +94,19 @@ function calcularTotalPuntos(datosProfesor) {
             puntosArticulos += puntajeArticulo;
         }
     });
-
-    // Asignar los puntos de los artículos al desglose
     desglose.articulos = puntosArticulos;
 
-    // Sumar los puntos de los artículos al total de productividad
-    puntosProductividad += puntosArticulos;
-
-    // Calcular puntos por obras artísticas
     let puntosObras = 0;
-    puntosObras += datosProfesor.obrasInternacional * 20; // Impacto internacional
-    puntosObras += datosProfesor.obrasNacional * 14; // Impacto nacional
+    for (let i = 1; i <= (parseInt(datosProfesor.obrasInternacional) || 0); i++) {
+        const puntajeObra = parseFloat(document.getElementById(`puntaje-obra-inter-${i}`)?.textContent || '20');
+        puntosObras += puntajeObra;
+    }
+    for (let i = 1; i <= (parseInt(datosProfesor.obrasNacional) || 0); i++) {
+        const puntajeObra = parseFloat(document.getElementById(`puntaje-obra-nac-${i}`)?.textContent || '14');
+        puntosObras += puntajeObra;
+    }
     desglose.obras = puntosObras;
 
-    // Calcular puntos por libros publicados
     let puntosLibros = 0;
     const numLibros = parseInt(datosProfesor.numLibros) || 0;
     for (let i = 1; i <= numLibros; i++) {
@@ -117,7 +115,25 @@ function calcularTotalPuntos(datosProfesor) {
     }
     desglose.libros = puntosLibros;
 
-    // Calcular puntos por tesis dirigidas
+    // Sumar artículos + obras + libros para el tope de productividad académica
+    let sumaProductividad = puntosArticulos + puntosObras + puntosLibros;
+
+    // Tope máximo de productividad académica según categoría docente (aplica a la suma, no a cada rubro)
+    const topesProductividad = {
+        'instructor': 80,
+        'instructorunal': 80,
+        'asistente': 160,
+        'asociado': 320,
+        'titular': 540
+    };
+    // Normaliza la categoría a minúsculas y sin espacios
+    const categoriaKeyProd = (datosProfesor.categoria || '').toLowerCase().replace(/\s+/g, '');
+    const topeProductividad = topesProductividad[categoriaKeyProd] || 0;
+    const puntosProductividad = Math.min(sumaProductividad, topeProductividad);
+
+    desglose.productividad = puntosProductividad;
+
+    // Calcular puntos por tesis dirigidas (fuera del tope de productividad académica)
     let puntosTesis = 0;
 
     // Tesis de maestría
@@ -147,22 +163,7 @@ function calcularTotalPuntos(datosProfesor) {
     desglose.tesis = puntosTesis;
 
     // Sumar todos los puntos al total
-    puntos += puntosObras + puntosLibros + puntosTesis;
-
-    puntos += Math.min(puntosProductividad, {
-        'Auxiliar': 80,
-        'Asistente': 160,
-        'Asociado': 320,
-        'Titular': 540
-    }[datosProfesor.categoria] || 0);
-    desglose.productividad = Math.min(puntosProductividad, {
-        'Auxiliar': 80,
-        'Asistente': 160,
-        'Asociado': 320,
-        'Titular': 540
-    }[datosProfesor.categoria] || 0);
-
-    desglose.articulos = puntosArticulos;
+    puntos += puntosProductividad + puntosTesis;
 
     return { total: puntos, desglose: desglose };
 }
@@ -206,18 +207,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function calcularSalarioPlanta(datosProfesor, valorPunto) {
-    datosProfesor.tipoProfesor = 'planta'; // Establecer tipo por defecto
+    datosProfesor.tipoProfesor = 'planta';
     const resultado = calcularTotalPuntos(datosProfesor);
 
-    // Ajustar el total de puntos incluyendo los puntos de artículos
-    const totalPuntos = resultado.total + (resultado.desglose.articulos || 0);
+    // El total de puntos YA incluye el tope de productividad académica, no sumar artículos aparte
+    const totalPuntos = resultado.total;
 
-    const puntosProductividad = resultado.desglose.productividad || 0; // Puntos por productividad
     const salarioMensual = totalPuntos * valorPunto; // Calcular el salario con el total ajustado
 
     return {
         puntos: totalPuntos, // Total ajustado
-        puntosProductividad, // Incluir puntos de productividad en el resultado
+        puntosProductividad: resultado.desglose.productividad || 0, // Incluir puntos de productividad en el resultado
         desglosePuntos: resultado.desglose,
         salarioMensual: salarioMensual,
         salarioTrimestral: salarioMensual * 3,
@@ -236,17 +236,17 @@ if (formPlanta) {
         // Obtener todos los valores del formulario
         const datosProfesor = {
             nombre: document.getElementById('nombre').value,
-            categoria: document.getElementById('categoria').value,
+            categoria: document.getElementById('categoria').value, // Debe ser: instructor, asistente, asociado, titular
             tipoPregrado: document.getElementById('titulo-pregrado').value,
             numEspecializaciones: parseInt(document.getElementById('especializaciones').value),
             duracionEspecializacion: parseInt(document.getElementById('duracion-especializacion').value),
             numMaestrias: parseInt(document.getElementById('maestrias').value),
             numDoctorados: parseInt(document.getElementById('doctorados').value),
             doctoradoPost1998: document.getElementById('doctorado-post-1998').checked,
-            aniosDocencia: parseInt(document.getElementById('experiencia-docencia').value),
-            aniosInvestigacion: parseInt(document.getElementById('experiencia-investigacion').value),
-            aniosDireccion: parseInt(document.getElementById('experiencia-direccion').value),
-            aniosProfesional: parseInt(document.getElementById('experiencia-profesional').value),
+            aniosDocencia: parseInt(document.getElementById('experiencia-docencia').value) || 0,
+            aniosInvestigacion: parseInt(document.getElementById('experiencia-investigacion').value) || 0,
+            aniosDireccion: parseInt(document.getElementById('experiencia-direccion').value) || 0,
+            aniosProfesional: parseInt(document.getElementById('experiencia-profesional').value) || 0,
             cargo: document.getElementById('cargo').value,
             aniosCargo: parseInt(document.getElementById('anios-cargo').value),
             obrasInternacional: parseInt(document.getElementById('obras-artisticas-inter').value),
@@ -302,17 +302,17 @@ if (formPlanta) {
             // Obtener todos los valores del formulario
             const datosProfesor = {
                 nombre: document.getElementById('nombre').value,
-                categoria: document.getElementById('categoria').value,
+                categoria: document.getElementById('categoria').value, // Debe ser: instructor, asistente, asociado, titular
                 tipoPregrado: document.getElementById('titulo-pregrado').value,
                 numEspecializaciones: parseInt(document.getElementById('especializaciones').value),
                 duracionEspecializacion: parseInt(document.getElementById('duracion-especializacion').value),
                 numMaestrias: parseInt(document.getElementById('maestrias').value),
                 numDoctorados: parseInt(document.getElementById('doctorados').value),
                 doctoradoPost1998: document.getElementById('doctorado-post-1998').checked,
-                aniosDocencia: parseInt(document.getElementById('experiencia-docencia').value),
-                aniosInvestigacion: parseInt(document.getElementById('experiencia-investigacion').value),
-                aniosDireccion: parseInt(document.getElementById('experiencia-direccion').value),
-                aniosProfesional: parseInt(document.getElementById('experiencia-profesional').value),
+                aniosDocencia: parseInt(document.getElementById('experiencia-docencia').value) || 0,
+                aniosInvestigacion: parseInt(document.getElementById('experiencia-investigacion').value) || 0,
+                aniosDireccion: parseInt(document.getElementById('experiencia-direccion').value) || 0,
+                aniosProfesional: parseInt(document.getElementById('experiencia-profesional').value) || 0,
                 cargo: document.getElementById('cargo').value,
                 aniosCargo: parseInt(document.getElementById('anios-cargo').value),
                 obrasInternacional: parseInt(document.getElementById('obras-artisticas-inter').value),
@@ -448,7 +448,7 @@ function mostrarResultadosPlanta(datosProfesor, resultado) {
 
                     <div class="point-item">
                         <span>Experiencia</span>
-                        <span class="point-value">${resultado.desglosePuntos.experiencia || 0}</span>
+                        <span class="point-value">${resultado.desglosePuntos.experienciaCalificada || 0}</span>
                     </div>
                  
                     <div class="point-item">
@@ -531,6 +531,42 @@ function limpiarFormularioPlanta() {
     document.getElementById('doctorados').selectedIndex = 0;
     document.getElementById('cargo').selectedIndex = 0;
     
+    // Limpiar los campos dinámicos de productividad académica
+    // Artículos
+    ['a1', 'a2', 'b', 'c'].forEach(cat => {
+        const autoresContainer = document.getElementById(`autores-${cat}-container`);
+        if (autoresContainer) autoresContainer.innerHTML = '';
+    });
+    // Libros
+    const librosContainer = document.getElementById('libros-container');
+    if (librosContainer) librosContainer.innerHTML = '';
+    // Obras artísticas
+    const obrasInterContainer = document.getElementById('obras-inter-container');
+    if (obrasInterContainer) obrasInterContainer.innerHTML = '';
+    const obrasNacContainer = document.getElementById('obras-nac-container');
+    if (obrasNacContainer) obrasNacContainer.innerHTML = '';
+    // Directores de tesis
+    const directoresMaestriaContainer = document.getElementById('directores-maestria-container');
+    if (directoresMaestriaContainer) directoresMaestriaContainer.innerHTML = '';
+    const directoresDoctoradoContainer = document.getElementById('directores-doctorado-container');
+    if (directoresDoctoradoContainer) directoresDoctoradoContainer.innerHTML = '';
+
+    // Restablecer los campos de múltiples directores de tesis
+    if (document.getElementById('num-tesis-multiple-maestria')) {
+        document.getElementById('num-tesis-multiple-maestria').value = '0';
+    }
+    if (document.getElementById('num-tesis-multiple-doctorado')) {
+        document.getElementById('num-tesis-multiple-doctorado').value = '0';
+    }
+    if (document.getElementById('multiple-directores-maestria')) {
+        document.getElementById('multiple-directores-maestria').checked = false;
+        document.getElementById('multiple-directores-maestria-container').style.display = 'none';
+    }
+    if (document.getElementById('multiple-directores-doctorado')) {
+        document.getElementById('multiple-directores-doctorado').checked = false;
+        document.getElementById('multiple-directores-doctorado-container').style.display = 'none';
+    }
+    
     // Poner el foco en el campo de nombre para facilitar la entrada de un nuevo profesor
     document.getElementById('nombre').focus();
     
@@ -599,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Obtener todos los valores del formulario
                 const datosProfesor = {
                     nombre: document.getElementById('nombre').value,
-                    categoria: document.getElementById('categoria').value,
+                    categoria: document.getElementById('categoria').value, // Debe ser: instructor, asistente, asociado, titular
                     tipoPregrado: document.getElementById('titulo-pregrado').value,
                     numEspecializaciones: parseInt(document.getElementById('especializaciones').value) || 0,
                     duracionEspecializacion: parseInt(document.getElementById('duracion-especializacion').value) || 0,

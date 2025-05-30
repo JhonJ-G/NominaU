@@ -4,7 +4,11 @@ document.getElementById('salary-form').addEventListener('submit', function(event
     // Obtener los valores de los campos del formulario
     const nombre = document.getElementById('nombre').value;
     const categoria = document.getElementById('categoria').value;
-    const experiencia = parseInt(document.getElementById('experiencia').value);
+    const experienciaDocencia = parseInt(document.getElementById('experiencia-docencia')?.value || '0');
+    const experienciaInvestigacion = parseInt(document.getElementById('experiencia-investigacion')?.value || '0');
+    const experienciaDireccion = parseInt(document.getElementById('experiencia-direccion')?.value || '0');
+    const experienciaProfesional = parseInt(document.getElementById('experiencia-profesional')?.value || '0');
+    const experiencia = experienciaDocencia + experienciaInvestigacion + experienciaDireccion + experienciaProfesional;
     const titulo = document.getElementById('titulo').value;
     const obras = parseInt(document.getElementById('obras').value);
     const cargo = document.getElementById('cargos').value;

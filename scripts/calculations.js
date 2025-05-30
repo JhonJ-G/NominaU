@@ -44,12 +44,22 @@ function calcularPuntosExperiencia(categoria, aniosDocencia, aniosInvestigacion,
     let puntosInvestigacion = aniosInvestigacion * PUNTOS_EXPERIENCIA.investigacion;
     let puntosDireccion = aniosDireccion * PUNTOS_EXPERIENCIA.direccion;
     let puntosProfesional = aniosProfesional * PUNTOS_EXPERIENCIA.profesional;
-    
+
     let totalPuntos = puntosDocencia + puntosInvestigacion + puntosDireccion + puntosProfesional;
-    
+
     // Limitar según la categoría
     let maximoCategoria = PUNTOS_EXPERIENCIA.maximos[categoria] || 0;
-    return Math.min(totalPuntos, maximoCategoria);
+    let experienciaCalificada = Math.min(totalPuntos, maximoCategoria);
+
+    return {
+        total: experienciaCalificada,
+        desglose: {
+            docencia: puntosDocencia,
+            investigacion: puntosInvestigacion,
+            direccion: puntosDireccion,
+            profesional: puntosProfesional
+        }
+    };
 }
 
 function calcularPuntosCargos(cargo, aniosCargo) {
@@ -118,70 +128,106 @@ function calcularPuntosTesis(numTesisMaestria, numTesisDoctorado) {
            (numTesisDoctorado * PUNTOS_TESIS.DOCTORADO);
 }
 
+// Cargos administrativos según tabla y reglas proporcionadas
+const PUNTOS_CARGOS_ADMIN = {
+    rector: 25,
+    vicerrector: 20,
+    decano: 15,
+    vicedecano: 13,
+    director: 12
+};
+
+function calcularPuntosCargosAdministrativos(cargo, aniosCargo) {
+    // Solo se suman años completos, máximo 5 años por cargo
+    if (!cargo || cargo === "ninguno" || aniosCargo <= 0) return 0;
+    const puntosPorAnio = PUNTOS_CARGOS[cargo] || 0;
+    const aniosReconocidos = Math.min(aniosCargo, 5);
+    return puntosPorAnio * aniosReconocidos;
+}
+
 function calcularTotalPuntos(datosProfesor) {
-    const {
-        categoria,
-        tipoPregrado,
-        numEspecializaciones,
-        duracionEspecializacion,
-        numMaestrias,
-        numDoctorados,
-        doctoradoPost1998,
-        aniosDocencia,
-        aniosInvestigacion,
-        aniosDireccion,
-        aniosProfesional,
-        cargo,
-        aniosCargo,
-        obrasInternacional,
-        obrasNacional,
-        articulosA1,
-        articulosA2,
-        articulosB,
-        articulosC,
-        numLibros,
-        numTesisMaestria,
-        numTesisDoctorado
-    } = datosProfesor;
+    // 1. Títulos universitarios
+    const puntosTitulo = calcularPuntosTitulo(datosProfesor.tipoPregrado) ?? 0;
+    let puntosEspecializacion = calcularPuntosEspecializacion(datosProfesor.numEspecializaciones, datosProfesor.duracionEspecializacion) ?? 0;
+    let puntosMaestria = calcularPuntosMaestria(datosProfesor.numMaestrias) ?? 0;
+    let puntosDoctorado = calcularPuntosDoctorado(datosProfesor.numDoctorados, (datosProfesor.numMaestrias > 0 || datosProfesor.numEspecializaciones > 0), datosProfesor.doctoradoPost1998) ?? 0;
 
-    // Determinar si tiene maestría o especialización para el cálculo del doctorado
-    const tieneMaestriaOEspecializacion = numMaestrias > 0 || numEspecializaciones > 0;
+    // Restricciones de suma de posgrados
+    // Máximo 60 puntos entre especialización no clínica y maestría
+    // Máximo 75 puntos entre especialización clínica y maestría
+    let maxPosgrados = 60;
+    if (datosProfesor.tipoPregrado === 'medicina' || datosProfesor.tipoPregrado === 'odontologia') {
+        maxPosgrados = 75;
+    }
+    let sumaEspecializacionMaestria = puntosEspecializacion + puntosMaestria;
+    if (sumaEspecializacionMaestria > maxPosgrados) {
+        if (puntosMaestria > maxPosgrados) {
+            puntosMaestria = maxPosgrados;
+            puntosEspecializacion = 0;
+        } else {
+            puntosEspecializacion = maxPosgrados - puntosMaestria;
+        }
+    }
 
-    // Calcular puntos por cada categoría
-    const puntosEscalafon = calcularPuntosEscalafon(categoria) ?? 0;
-    const puntosTitulo = calcularPuntosTitulo(tipoPregrado) ?? 0;
-    const puntosEspecializacion = calcularPuntosEspecializacion(numEspecializaciones, duracionEspecializacion) ?? 0;
-    const puntosMaestria = calcularPuntosMaestria(numMaestrias) ?? 0;
-    const puntosDoctorado = calcularPuntosDoctorado(numDoctorados, tieneMaestriaOEspecializacion, doctoradoPost1998) ?? 0;
-    const puntosExperiencia = calcularPuntosExperiencia(categoria, aniosDocencia, aniosInvestigacion, aniosDireccion, aniosProfesional) ?? 0;
-    const puntosCargos = calcularPuntosCargos(cargo, aniosCargo) ?? 0;
-    const puntosObras = calcularPuntosObras(obrasInternacional, obrasNacional) ?? 0;
+    // 2. Categoría en el escalafón docente
+    const puntosEscalafon = calcularPuntosEscalafon(datosProfesor.categoria) ?? 0;
+
+    // 3. Experiencia calificada (sumada en un solo campo)
+    const experienciaObj = calcularPuntosExperiencia(
+        datosProfesor.categoria,
+        datosProfesor.aniosDocencia,
+        datosProfesor.aniosInvestigacion,
+        datosProfesor.aniosDireccion,
+        datosProfesor.aniosProfesional
+    ) ?? { total: 0, desglose: {} };
+    const puntosExperiencia = experienciaObj.total;
+
+    // 4. Cargos administrativos (solo el de mayor puntaje si hay varios)
+    const puntosCargos = calcularPuntosCargosAdministrativos(datosProfesor.cargo, datosProfesor.aniosCargo) ?? 0;
+
+    // 5. Productividad académica (solo artículos, obras y libros, NO tesis)
+    const puntosObras = calcularPuntosObras(datosProfesor.obrasInternacional, datosProfesor.obrasNacional) ?? 0;
     const puntosArticulos = calcularPuntosArticulos(datosProfesor) ?? 0;
-    const puntosLibros = calcularPuntosLibros(numLibros) ?? 0;
-    const puntosTesis = calcularPuntosTesis(numTesisMaestria, numTesisDoctorado) ?? 0;
-    
-    // Asegurar que no se exceda el máximo acumulable de posgrados
-    const totalPosgrados = Math.min(puntosEspecializacion + puntosMaestria + puntosDoctorado, PUNTOS_POSGRADO.maximoAcumulable);
+    const puntosLibros = calcularPuntosLibros(datosProfesor.numLibros) ?? 0;
+    // Las tesis NO van en el tope de productividad académica
+    const puntosTesis = calcularPuntosTesis(datosProfesor.numTesisMaestria, datosProfesor.numTesisDoctorado) ?? 0;
+
+    // Tope máximo de productividad académica según categoría docente
+    const topesProductividad = {
+        instructor: 80,
+        instructorunal: 80,
+        asistente: 160,
+        asociado: 320,
+        titular: 540
+    };
+    // Normaliza la categoría para el tope
+    const categoriaKey = (datosProfesor.categoria || '').toLowerCase().replace(/\s+/g, '');
+    const topeProductividad = topesProductividad[categoriaKey] || 0;
+
+    // Sumar solo artículos, obras y libros para el tope de productividad académica
+    const sumaProductividad = puntosObras + puntosArticulos + puntosLibros;
+    const puntosProductividad = Math.min(sumaProductividad, topeProductividad);
 
     // Suma total de puntos
-    const totalPuntos = puntosEscalafon + puntosTitulo + totalPosgrados + puntosExperiencia + 
-                       puntosCargos + puntosObras + puntosArticulos + puntosLibros + puntosTesis;
+    const totalPuntos = puntosTitulo + puntosEspecializacion + puntosMaestria + puntosDoctorado +
+        puntosEscalafon + puntosExperiencia + puntosCargos + puntosProductividad + puntosTesis;
 
     return {
         total: totalPuntos,
         desglose: {
-            escalafon: puntosEscalafon ?? 0,
-            titulo: puntosTitulo ?? 0,
-            especializacion: puntosEspecializacion ?? 0,
-            maestria: puntosMaestria ?? 0,
-            doctorado: puntosDoctorado ?? 0,
-            posgradosTotal: totalPosgrados ?? 0,
-            experiencia: puntosExperiencia ?? 0,
-            cargos: puntosCargos ?? 0,
-            obras: puntosObras ?? 0,
-            articulos: puntosArticulos ?? 0,
-            libros: puntosLibros ?? 0,
-            tesis: puntosTesis ?? 0
+            titulo: puntosTitulo,
+            especializacion: puntosEspecializacion,
+            maestria: puntosMaestria,
+            doctorado: puntosDoctorado,
+            escalafon: puntosEscalafon,
+            experienciaCalificada: puntosExperiencia,
+            experiencia: experienciaObj ? experienciaObj.desglose : {},
+            cargos: puntosCargos,
+            obras: puntosObras,
+            articulos: puntosArticulos,
+            libros: puntosLibros,
+            tesis: puntosTesis,
+            productividad: puntosProductividad // Este campo ya refleja el tope aplicado
         }
     };
 }
@@ -212,3 +258,6 @@ function calculateSalary(formData) {
         }
     };
 }
+
+// La función calcularPuntosExperiencia ya suma correctamente los años de experiencia y aplica el tope.
+// Solo asegúrate que los nombres de las categorías coincidan con los del formulario.
